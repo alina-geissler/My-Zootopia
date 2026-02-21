@@ -49,5 +49,5 @@ for animal_obj in animals_data:
 
 html_with_data = template.replace("__REPLACE_ANIMALS_INFO__", output)
 
-with open("animals.html", "w", encoding="utf-8") as handle:
+with open("animals.html", "w") as handle:
     handle.write(html_with_data)
