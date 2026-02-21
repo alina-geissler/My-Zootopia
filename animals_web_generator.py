@@ -3,7 +3,7 @@ import json
 
 def load_data(file_path):
     """ Loads a JSON file """
-    with open(file_path, "r") as handle:
+    with open(file_path, "r", encoding="utf-8") as handle:
         return json.load(handle)
 
 
@@ -23,16 +23,18 @@ output = ''
 
 for animal in animals_data:
     output += '<li class="cards__item">\n'
-    output += f'Name: {animal["name"]}<br/>\n'
+    output += f'<div class="card__title">{animal["name"]}</div>\n'
+    output += '<p class="card__text">'
     diet = animal['characteristics'].get('diet')
     if diet:
-        output += f'Diet: {diet}<br/>\n'
+        output += f'<strong>Diet:</strong> {diet}<br/>\n'
     locations = animal['locations']
     if locations:
-        output += f'Location: {locations[0]}<br/>\n'
+        output += f'<strong>Location:</strong> {locations[0]}<br/>\n'
     animal_type = animal['characteristics'].get('type')
     if animal_type:
-        output += f'Type: {animal_type}<br/>\n'
+        output += f'<strong>Type:</strong> {animal_type}<br/>\n'
+    output += '</p>\n'
     output += '</li>\n'
 
 
