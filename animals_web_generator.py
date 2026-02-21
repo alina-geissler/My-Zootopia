@@ -10,25 +10,32 @@ def load_data(file_path):
 animals_data = load_data('animals_data.json')
 
 
-def print_information(data):
-    for animal in data:
-        print(f"Name: {animal["name"]}")
-        diet = animal["characteristics"].get("diet")
-        if diet:
-            print(f"Diet: {diet}")
-        locations = animal["locations"]
-        if locations:
-            print(f"Location: {locations[0]}")
-        animal_type = animal["characteristics"].get("type")
-        if animal_type:
-            print(f"Type: {animal_type}")
-        print()
+def load_template(file_path):
+    """ Loads an HTML template """
+    with open(file_path, "r") as handle:
+        return handle.read()
 
 
+template = load_template("animals_template.html")
 
-def main():
-    print_information(animals_data)
+# create a string with the animal data
+output = ""
+
+for animal in animals_data:
+    output += f"Name: {animal["name"]}\n"
+    diet = animal["characteristics"].get("diet")
+    if diet:
+        output += f"Diet: {diet}\n"
+    locations = animal["locations"]
+    if locations:
+        output += f"Location: {locations[0]}\n"
+    animal_type = animal["characteristics"].get("type")
+    if animal_type:
+        output += f"Type: {animal_type}\n"
 
 
-if __name__ == "__main__":
-    main()
+html_with_data = template.replace("__REPLACE_ANIMALS_INFO__", output)
+print(html_with_data)
+
+with open("animals.html", "w") as handle:
+    handle.write(html_with_data)
