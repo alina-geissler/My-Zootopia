@@ -19,19 +19,21 @@ def load_template(file_path):
 template = load_template("animals_template.html")
 
 # create a string with the animal data
-output = ""
+output = ''
 
 for animal in animals_data:
-    output += f"Name: {animal["name"]}\n"
-    diet = animal["characteristics"].get("diet")
+    output += '<li class="cards__item">\n'
+    output += f'Name: {animal["name"]}<br/>\n'
+    diet = animal['characteristics'].get('diet')
     if diet:
-        output += f"Diet: {diet}\n"
-    locations = animal["locations"]
+        output += f'Diet: {diet}<br/>\n'
+    locations = animal['locations']
     if locations:
-        output += f"Location: {locations[0]}\n"
-    animal_type = animal["characteristics"].get("type")
+        output += f'Location: {locations[0]}<br/>\n'
+    animal_type = animal['characteristics'].get('type')
     if animal_type:
-        output += f"Type: {animal_type}\n"
+        output += f'Type: {animal_type}<br/>\n'
+    output += '</li>\n'
 
 
 html_with_data = template.replace("__REPLACE_ANIMALS_INFO__", output)
