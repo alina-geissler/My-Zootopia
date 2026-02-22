@@ -35,9 +35,18 @@ def serialize_animal(animal_obj):
     locations = animal_obj['locations']
     if locations:
         output += f'<strong>Location:</strong> {locations[0]}<br/>\n'
+    habitat = animal_obj['characteristics'].get('habitat')
+    if habitat:
+        output += f'<strong>Habitat:</strong> {habitat}<br/>\n'
     animal_type = animal_obj['characteristics'].get('type')
     if animal_type:
         output += f'<strong>Type:</strong> {animal_type}<br/>\n'
+    skin_type = animal_obj['characteristics'].get('skin_type')
+    if skin_type:
+        output += f'<strong>Skin:</strong> {skin_type}<br/>\n'
+    color = animal_obj['characteristics'].get('color')
+    if color:
+        output += f'<strong>Color:</strong> {color}<br/>\n'
     output += '</p>\n'
     output += '</li>\n'
     return output
@@ -51,3 +60,5 @@ html_with_data = template.replace("__REPLACE_ANIMALS_INFO__", output)
 
 with open("animals.html", "w") as handle:
     handle.write(html_with_data)
+
+
