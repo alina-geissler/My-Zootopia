@@ -27,27 +27,29 @@ def serialize_animal(animal_obj):
     """
     output = ''
     output += '<li class="cards__item">\n'
-    output += f'<div class="card__title">{animal_obj["name"]}</div>\n'
-    output += '<p class="card__text">'
+    output += f'<div class="card__title" style="margin: 20;">{animal_obj["name"]}</div>\n'
+    output += '<div class="card__text">\n'
+    output += '<ul style="list-style-type:none;">\n'
     diet = animal_obj['characteristics'].get('diet')
     if diet:
-        output += f'<strong>Diet:</strong> {diet}<br/>\n'
+        output += f'<li><strong>Diet:</strong> {diet}</li>\n'
     locations = animal_obj['locations']
     if locations:
-        output += f'<strong>Location:</strong> {locations[0]}<br/>\n'
+        output += f'<li><strong>Location:</strong> {locations[0]}<li/>\n'
     habitat = animal_obj['characteristics'].get('habitat')
     if habitat:
-        output += f'<strong>Habitat:</strong> {habitat}<br/>\n'
+        output += f'<li><strong>Habitat:</strong> {habitat}<li/>\n'
     animal_type = animal_obj['characteristics'].get('type')
     if animal_type:
-        output += f'<strong>Type:</strong> {animal_type}<br/>\n'
+        output += f'<li><strong>Type:</strong> {animal_type}<li/>\n'
     skin_type = animal_obj['characteristics'].get('skin_type')
     if skin_type:
-        output += f'<strong>Skin:</strong> {skin_type}<br/>\n'
+        output += f'<li><strong>Skin:</strong> {skin_type}<li/>\n'
     color = animal_obj['characteristics'].get('color')
     if color:
-        output += f'<strong>Color:</strong> {color}<br/>\n'
-    output += '</p>\n'
+        output += f'<li><strong>Color:</strong> {color}<li/>\n'
+    output += '</ul>\n'
+    output += '</div>\n'
     output += '</li>\n'
     return output
 
@@ -55,6 +57,7 @@ def serialize_animal(animal_obj):
 output = ''
 for animal_obj in animals_data:
     output += serialize_animal(animal_obj)
+    print(output)
 
 html_with_data = template.replace("__REPLACE_ANIMALS_INFO__", output)
 
