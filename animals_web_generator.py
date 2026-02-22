@@ -54,14 +54,60 @@ def serialize_animal(animal_obj):
     return output
 
 
-output = ''
-for animal_obj in animals_data:
-    output += serialize_animal(animal_obj)
-    print(output)
+def select_skin_type(animals_data):
+    """
+    Let user decide which animals should appear on the website.
+    :param animals_data: information about all animals
+    :return: selected skin type
+    """
+    skin_types = list(set([animal["characteristics"].get("skin_type") for animal in animals_data]))
+    while True:
+        skin_type = input(f"Choose between {skin_types} or leave blank for all animals: ").capitalize().strip()
+        if skin_type in skin_types or skin_type == "":
+            return skin_type
+        else:
+            print("Please select an available type.")
 
-html_with_data = template.replace("__REPLACE_ANIMALS_INFO__", output)
 
-with open("animals.html", "w") as handle:
-    handle.write(html_with_data)
+def create_html_file(skin_type):
+    """
+    Generate HTML file based on user choice.
+    :param skin_type: type selected by user
+    """
+    if skin_type == "":
+        output = ''
+        for animal_obj in animals_data:
+            output += serialize_animal(animal_obj)
+        html_with_data = template.replace("__REPLACE_ANIMALS_INFO__", output)
+        with open("animals.html", "w") as handle:
+            handle.write(html_with_data)
+    else:
+        output = ''
+        for animal_obj in animals_data:
+            if animal_obj["characteristics"].get("skin_type") == skin_type:
+                output += serialize_animal(animal_obj)
+        html_with_data = template.replace("__REPLACE_ANIMALS_INFO__", output)
+        with open("animals.html", "w") as handle:
+            handle.write(html_with_data)
+
+
+def main():
+    """
+    Execute the main program: greet user, get skin type input and generate HTML file accordingly.
+    """
+    print("Welcome to your Animal Repository Generator!\n")
+    print("Please select the SKIN TYPE you want the animals on your website to have.")
+    skin_type = select_skin_type(animals_data)
+    create_html_file(skin_type)
+    print("\nYour HTML file has been created!")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
 
 
