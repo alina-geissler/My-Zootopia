@@ -1,5 +1,10 @@
 import json
 
+DATA_PATH = 'animals_data.json'
+TEMPLATE_PATH = 'animals_template.html'
+OUTPUT_HTML_PATH = 'animals.html'
+PLACEHOLDER_ANIMALS_INFO = '__REPLACE_ANIMALS_INFO__'
+
 
 def load_data(file_path):
     """ Loads a JSON file """
@@ -7,7 +12,7 @@ def load_data(file_path):
         return json.load(handle)
 
 
-animals_data = load_data('animals_data.json')
+animals_data = load_data(DATA_PATH)
 
 
 def load_template(file_path):
@@ -16,7 +21,7 @@ def load_template(file_path):
         return handle.read()
 
 
-template = load_template("animals_template.html")
+template = load_template(TEMPLATE_PATH)
 
 
 def serialize_animal(animal_obj):
@@ -27,40 +32,44 @@ def serialize_animal(animal_obj):
     """
     output = ''
     output += '<li class="cards__item">\n'
-    output += f'<div class="card__title" style="margin: 20;">{animal_obj["name"]}</div>\n'
+    output += f'<div class="card__title" style="margin: 20;">{animal_obj.get("name")}</div>\n'
     output += '<div class="card__text">\n'
     output += '<ul style="list-style-type:none;">\n'
-    diet = animal_obj['characteristics'].get('diet')
-    if diet:
-        output += f'<li><strong>Diet:</strong> {diet}</li>\n'
-    locations = animal_obj['locations']
+    locations = animal_obj.get('locations')
     if locations:
-        output += f'<li><strong>Location:</strong> {locations[0]}<li/>\n'
-    habitat = animal_obj['characteristics'].get('habitat')
-    if habitat:
-        output += f'<li><strong>Habitat:</strong> {habitat}<li/>\n'
-    animal_type = animal_obj['characteristics'].get('type')
-    if animal_type:
-        output += f'<li><strong>Type:</strong> {animal_type}<li/>\n'
-    skin_type = animal_obj['characteristics'].get('skin_type')
-    if skin_type:
-        output += f'<li><strong>Skin:</strong> {skin_type}<li/>\n'
-    color = animal_obj['characteristics'].get('color')
-    if color:
-        output += f'<li><strong>Color:</strong> {color}<li/>\n'
-    output += '</ul>\n'
-    output += '</div>\n'
-    output += '</li>\n'
+        output += f'<li><strong>Location:</strong> {locations[0]}</li>\n'
+    if animal_obj.get('characteristics'):
+        habitat = animal_obj.get('characteristics').get('habitat')
+        if habitat:
+            output += f'<li><strong>Habitat:</strong> {habitat}</li>\n'
+        diet = animal_obj['characteristics'].get('diet')
+        if diet:
+            output += f'<li><strong>Diet:</strong> {diet}</li>\n'
+        animal_type = animal_obj.get('characteristics').get('type')
+        if animal_type:
+            output += f'<li><strong>Type:</strong> {animal_type}</li>\n'
+        skin_type = animal_obj.get('characteristics').get('skin_type')
+        if skin_type:
+            output += f'<li><strong>Skin:</strong> {skin_type}</li>\n'
+        color = animal_obj.get('characteristics').get('color')
+        if color:
+            output += f'<li><strong>Color:</strong> {color}</li>\n'
+        output += '</ul>\n'
+        output += '</div>\n'
+        output += '</li>\n'
     return output
 
 
-def select_skin_type(animals_data):
+def select_skin_type(animals_info):
     """
     Let user decide which animals should appear on the website.
-    :param animals_data: information about all animals
+    :param animals_info: information about all animals
     :return: selected skin type
     """
-    skin_types = list(set([animal["characteristics"].get("skin_type") for animal in animals_data]))
+    skin_types = list(set([animal["characteristics"].get("skin_type") for animal in animals_info
+                           if animal.get("characteristics")]))
+    if None in skin_types:
+        skin_types.remove(None)
     while True:
         skin_type = input(f"Choose between {skin_types} or leave blank for all animals: ").capitalize().strip()
         if skin_type in skin_types or skin_type == "":
@@ -78,16 +87,16 @@ def create_html_file(skin_type):
         output = ''
         for animal_obj in animals_data:
             output += serialize_animal(animal_obj)
-        html_with_data = template.replace("__REPLACE_ANIMALS_INFO__", output)
-        with open("animals.html", "w") as handle:
+        html_with_data = template.replace(PLACEHOLDER_ANIMALS_INFO, output)
+        with open(OUTPUT_HTML_PATH, "w") as handle:
             handle.write(html_with_data)
     else:
         output = ''
         for animal_obj in animals_data:
-            if animal_obj["characteristics"].get("skin_type") == skin_type:
+            if animal_obj.get("characteristics").get("skin_type") == skin_type:
                 output += serialize_animal(animal_obj)
-        html_with_data = template.replace("__REPLACE_ANIMALS_INFO__", output)
-        with open("animals.html", "w") as handle:
+        html_with_data = template.replace(PLACEHOLDER_ANIMALS_INFO, output)
+        with open(OUTPUT_HTML_PATH, "w") as handle:
             handle.write(html_with_data)
 
 
