@@ -17,7 +17,7 @@ animals_data = load_data(DATA_PATH)
 
 def load_template(file_path):
     """ Loads an HTML template """
-    with open(file_path, "r") as handle:
+    with open(file_path, "r", encoding="utf-8") as handle:
         return handle.read()
 
 
@@ -54,24 +54,32 @@ def serialize_animal(animal_obj):
         color = animal_obj.get('characteristics').get('color')
         if color:
             output += f'<li><strong>Color:</strong> {color}</li>\n'
-        output += '</ul>\n'
-        output += '</div>\n'
-        output += '</li>\n'
+    output += '</ul>\n'
+    output += '</div>\n'
+    output += '</li>\n'
     return output
 
 
-def select_skin_type(animals_info):
+def get_skin_types():
     """
-    Let user decide which animals should appear on the website.
-    :param animals_info: information about all animals
-    :return: selected skin type
+    Get all available skin types.
+    :return: available skin types to let user choose from
     """
-    skin_types = list(set([animal["characteristics"].get("skin_type") for animal in animals_info
+    skin_types = list(set([animal["characteristics"].get("skin_type") for animal in animals_data
                            if animal.get("characteristics")]))
     if None in skin_types:
         skin_types.remove(None)
+    return skin_types
+
+
+def select_skin_type(skin_types):
+    """
+    Let user decide which animals should appear on the website.
+    :param skin_types: available skin_types of chosen animal
+    :return: selected skin type
+    """
     while True:
-        skin_type = input(f"Choose between {skin_types} or leave blank for all animals: ").capitalize().strip()
+        skin_type = input(f"Choose between {skin_types} or leave blank for all animals: ").title().strip()
         if skin_type in skin_types or skin_type == "":
             return skin_type
         else:
@@ -88,16 +96,16 @@ def create_html_file(skin_type):
         for animal_obj in animals_data:
             output += serialize_animal(animal_obj)
         html_with_data = template.replace(PLACEHOLDER_ANIMALS_INFO, output)
-        with open(OUTPUT_HTML_PATH, "w") as handle:
-            handle.write(html_with_data)
     else:
         output = ''
         for animal_obj in animals_data:
-            if animal_obj.get("characteristics").get("skin_type") == skin_type:
-                output += serialize_animal(animal_obj)
+            if animal_obj.get("characteristics"):
+                if animal_obj.get("characteristics").get("skin_type") == skin_type:
+                    output += serialize_animal(animal_obj)
         html_with_data = template.replace(PLACEHOLDER_ANIMALS_INFO, output)
-        with open(OUTPUT_HTML_PATH, "w") as handle:
-            handle.write(html_with_data)
+
+    with open(OUTPUT_HTML_PATH, "w", encoding="utf-8") as handle:
+        handle.write(html_with_data)
 
 
 def main():
@@ -105,9 +113,14 @@ def main():
     Execute the main program: greet user, get skin type input and generate HTML file accordingly.
     """
     print("Welcome to your Animal Repository Generator!\n")
-    print("Please select the SKIN TYPE you want the animals on your website to have.")
-    skin_type = select_skin_type(animals_data)
-    create_html_file(skin_type)
+
+    skin_types = get_skin_types()
+    if skin_types:
+        print("Please select the SKIN TYPE you want the animals on your website to have.")
+        selected_skin_type = select_skin_type(skin_types)
+    else:
+        selected_skin_type = ""
+    create_html_file(selected_skin_type)
     print("\nYour HTML file has been created!")
 
 
